@@ -186,8 +186,11 @@ h1{
     font-weight: inherit;
     color: inherit;
     appearance: none;
-    visibility: hidden;
+    opacity: 0;
 
+}
+.button_true{
+    opacity: 1;
 }
 ul{
     padding: 0;

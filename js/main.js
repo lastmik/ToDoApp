@@ -1,7 +1,10 @@
 
 let input = document.querySelector("#input");
 let todo_list = document.querySelector("#todo_list");
+let clearCompleted = document.querySelector("#clear");
+let toggle_all = document.querySelector('#toggle_all');
 let count = 0;
+let count_copleted = 0;
 location.hash="#/";
 
 let array =[];
@@ -9,6 +12,7 @@ class InputElement{
   element;
   complete = false;
   dateCreate;
+  destroy = false;
   constructor(value){
     let todo_item = document.createElement('div');
       todo_item.setAttribute('class', 'imputBlock');
@@ -66,23 +70,116 @@ function todo_onblure(elem){
 function toggles_complete(elem){
   if(elem.target.checked){
     document.querySelector("#count").textContent=++count;
+    --count_copleted;
     elem.target.checked= false;
+    
   }else{
     document.querySelector("#count").textContent=--count;
+    ++count_copleted;
     elem.target.checked= true;
   }
-
-  elem.target.nextElementSibling.classList.toggle('done');
-  elem.target.classList.toggle('toggle_done');
+  toggle_done(elem.target);
+  input_done( elem.target.nextElementSibling);
+  
+  
   check_filter();
+  chek_Completed();
 
 }
 
+
+
+function toggle_done(elem){
+  elem.classList.toggle('toggle_done');
+}
+function input_done(elem){
+  elem.classList.toggle('done');
+}
+
+toggle_all.addEventListener('click', toggleAll);
+
+function toggleAll(){
+
+  if(count_copleted ===0)
+    {
+    array.map(function(elem){
+      toggle_done(elem.element.firstChild);
+      input_done( elem.element.firstChild.nextElementSibling);
+      elem.element.firstChild.checked = true;
+      ++count_copleted;
+
+      return elem;
+  });
+  document.querySelector("#count").textContent=count=0;
+  
+  }else if(count ===0){
+    array.map(function(elem){
+      toggle_done(elem.element.firstChild);
+      input_done( elem.element.firstChild.nextElementSibling);
+      elem.element.firstChild.checked = false;
+      document.querySelector("#count").textContent=++count;
+
+      return elem;
+  });
+  count_copleted = 0;
+  }else{
+    array.map(function(elem){
+      if(!elem.element.firstChild.checked){
+      toggle_done(elem.element.firstChild);
+      input_done( elem.element.firstChild.nextElementSibling);
+      elem.element.firstChild.checked = true;
+      ++count_copleted;
+      document.querySelector("#count").textContent=--count;
+    }
+      return elem;
+    
+  });
+  }
+  check_filter();
+  chek_Completed();
+}
+
+
+clearCompleted.addEventListener('click', clear_Completed);
+
+function chek_Completed(){
+  if(count_copleted > 0)
+  clearCompleted.classList.add('button_true');
+  else
+  clearCompleted.classList.remove('button_true');
+}
+
+function clear_Completed(){
+
+  array.forEach(elem=>{
+    if(elem.element.firstChild.checked){
+      elem.destroy = true
+      elem.element.remove();
+
+    }
+  });
+  count_copleted = 0;
+  chek_Completed();
+  clear_Array();
+}
+
+
+
 function toggles_destroy(elem){
+  array.forEach(toDo=>{
+    if(toDo.element === elem.target.parentNode.parentNode){
+      toDo.destroy = true;
+    }
+  });
+  clear_Array();
   elem.target.parentElement.parentElement.remove();
+  
   document.querySelector("#count").textContent=--count;
 }
 
+function clear_Array(){
+  array = array.filter(elem => elem.destroy ===false);
+}
 
 
 input.addEventListener('keydown', function(event) {
@@ -106,6 +203,7 @@ document.querySelector("#active").addEventListener('click', filter_Active);
 document.querySelector("#completed").addEventListener('click', filter_Completed);
 
   function filter_All(event){
+    if(event)
     selectFilter(event.target);
     array.map(function(elem){
       if(elem.element.classList.contains('noactive')){
@@ -115,6 +213,7 @@ document.querySelector("#completed").addEventListener('click', filter_Completed)
     });
   }
   function filter_Active(event){
+    if(event)
     selectFilter(event.target);
     array.map(function(elem){
       if(elem.element.firstChild.checked){
@@ -127,7 +226,9 @@ document.querySelector("#completed").addEventListener('click', filter_Completed)
     });
   }
   function filter_Completed(event){
+    if(event)
     selectFilter(event.target);
+
     array.map(function(elem){
       if(!elem.element.firstChild.checked)
        elem.element.classList.add('noactive');
