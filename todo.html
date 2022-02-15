@@ -1,55 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>todoapp</title>
-		<link href="css/index.css" rel="stylesheet">
-	</head>
-	<body >
-			<h1 class="todoapp">todoapp</h1>
-			<div class="imputBlock">
-				<label id="toggle_all" class="toggle-all" type="checkbox"></label>
-				<input id="input" class="input" placeholder="What needs to be done?" >
-			</div>
-		<section class="todo_section" >
-				<ul id="todo_list" class="todo_list">
-					<div class="imputBlock">
-					<label class="toggle" type="checkbox" ></label>
-					<input class="todo" readonly>
-					<div class="dispaly">
-					<button class="destroy" ></button>
-					</div>
-					</div>
-				</ul>
-			<footer class="footer" >
-				<span><strong id="count">0</strong> item left</span>
-				<ul  class="sort">
-					<li >
-						<a href>ASC</a>
-					</li>
-					<li>
-						<a href>DESC </a>
-					</li>
-				</ul>
-				<ul class="filters">
-					<li >
-						<a id="all" class="selected"  href="#/">All</a>
-					</li>
-					<li>
-						<a id="active" href="#/active">Active</a>
-					</li>
-					<li>
-						<a id="completed" href="#/completed">Completed</a>
-					</li>
-				</ul>
-				<button id="clear" class="button">Clear completed</button>
-			</footer>
-		</section>
+  <head>
+    <meta charset="utf-8" />
+    <title>todoapp</title>
+    <link href="css/index.css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1 class="todoapp">todoapp</h1>
+    <div class="imputBlock">
+      <label id="toggle_all" class="toggle-all" type="checkbox"></label>
+      <input id="input" class="input" placeholder="What needs to be done?" />
+    </div>
+    <section class="todo_section">
+      <ul id="todo_list" class="todo_list"></ul>
+      <footer class="footer">
+        <span><strong id="count">0</strong> item left</span>
+        <button id="asc" class="button">ASC</button>
+        <button id="desc" class="button">DESC</button>
 
-		<footer class="info">
-			<p>Double-click to edit a todo</p>
+        <ul class="filters">
+          <li>
+            <a id="all" class="selected" href="#/">All</a>
+          </li>
+          <li>
+            <a id="active" href="#/active">Active</a>
+          </li>
+          <li>
+            <a id="completed" href="#/completed">Completed</a>
+          </li>
+        </ul>
+        <button id="clear" class="button button_true">Clear completed</button>
+      </footer>
+    </section>
 
-		</footer>
-		<script src="./js/main.js"></script>
-	</body>
+    <footer class="info">
+      <p>Double-click to edit a todo</p>
+    </footer>
+    <script src="./js/main.js"></script>
+  </body>
 </html>
