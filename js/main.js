@@ -57,7 +57,7 @@ class InputElement {
     todo_item.appendChild(todo_input);
     todo_item.appendChild(display);
     this.element = todo_item;
-    this.dateCreate = Date();
+    this.dateCreate = Date.now();
   }
 }
 
@@ -270,7 +270,7 @@ function sortASC() {
     if (valueA < valueB) return -1;
     if (valueA > valueB) return 1;
 
-    return 0;
+    return a.dateCreate-b.dateCreate;
   });
   todo_list.innerHTML = "";
   array.forEach((elem) => {
@@ -286,7 +286,7 @@ function sortDESC() {
     if (valueA > valueB) return -1;
     if (valueA < valueB) return 1;
 
-    return 0;
+    return b.dateCreate-a.dateCreate;
   });
   todo_list.innerHTML = "";
   array.forEach((elem) => {
