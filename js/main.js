@@ -5,6 +5,7 @@ let toggle_all = document.querySelector("#toggle_all");
 let filters = document.querySelector(".footer");
 let asc = document.querySelector("#asc");
 let desc = document.querySelector("#desc");
+let counter = document.querySelector("#count");
 
 document.querySelector("#all").addEventListener("click", filter_All);
 document.querySelector("#active").addEventListener("click", filter_Active);
@@ -81,11 +82,11 @@ function todo_onblure(elem) {
 //click event on completion ToDo
 function toggles_complete(elem) {
   if (elem.target.checked) {
-    document.querySelector("#count").textContent = ++count;
+    counter.textContent = ++count;
     --count_copleted;
     elem.target.checked = false;
   } else {
-    document.querySelector("#count").textContent = --count;
+    counter.textContent = --count;
     ++count_copleted;
     elem.target.checked = true;
   }
@@ -115,13 +116,13 @@ function toggleAll() {
 
       return elem;
     });
-    document.querySelector("#count").textContent = count = 0;
+    counter.textContent = count = 0;
   } else if (count === 0) {
     array.map(function (elem) {
       toggle_done(elem.element.firstChild);
       input_done(elem.element.firstChild.nextElementSibling);
       elem.element.firstChild.checked = false;
-      document.querySelector("#count").textContent = ++count;
+      counter.textContent = ++count;
 
       return elem;
     });
@@ -133,7 +134,7 @@ function toggleAll() {
         input_done(elem.element.firstChild.nextElementSibling);
         elem.element.firstChild.checked = true;
         ++count_copleted;
-        document.querySelector("#count").textContent = --count;
+        counter.textContent = --count;
       }
       return elem;
     });
@@ -169,6 +170,7 @@ function clear_Completed() {
   clear_Array();
   check_footer();
   toggleAll_check();
+  check_filter();
 }
 
 //ToDo delete event
@@ -181,7 +183,7 @@ function toggles_destroy(elem) {
   clear_Array();
   elem.target.parentElement.parentElement.remove();
   if (!elem.target.parentElement.parentElement.firstChild.checked)
-    document.querySelector("#count").textContent = --count;
+  counter.textContent = --count;
   else count_copleted--;
 
   check_footer();
@@ -201,14 +203,16 @@ input.addEventListener("keydown", function (event) {
   ) {
     array.push(new InputElement(input.value));
     todo_list.appendChild(array[array.length - 1].element);
-    document.querySelector("#count").textContent = ++count;
+    counter.textContent = ++count;
   }
   check_footer();
+  check_filter();
 });
 
 function check_filter() {
   if (location.hash === "#/active") filter_Active();
   else if (location.hash === "#/completed") filter_Completed();
+  else filter_All();
 }
 
 //Filter show all ToDo
@@ -216,10 +220,11 @@ function filter_All(event) {
   if (event) selectFilter(event.target);
   array.map(function (elem) {
     if (elem.element.classList.contains("noactive")) {
-      elem.element.classList.remove("noactive");
+      elem.element.classList.remove("noactive"); 
     }
     return elem;
   });
+  counter.textContent = count+count_copleted;
 }
 
 //Filter show all active ToDo
@@ -228,26 +233,30 @@ function filter_Active(event) {
   array.map(function (elem) {
     if (elem.element.firstChild.checked) {
       elem.element.classList.add("noactive");
-    } else if (elem.element.classList.contains("noactive") && !elem.element.firstChild.checked) elem.element.classList.remove("noactive");
-
+    } else if (elem.element.classList.contains("noactive") 
+    && !elem.element.firstChild.checked) {
+    elem.element.classList.remove("noactive");
+  }
     return elem;
   });
+  counter.textContent = count;
 }
 
 //Filter show all completed ToDo
 function filter_Completed(event) {
   if (event) selectFilter(event.target);
-
   array.map(function (elem) {
     if (!elem.element.firstChild.checked)
       elem.element.classList.add("noactive");
     else if (
       elem.element.classList.contains("noactive") &&
       elem.element.firstChild.checked
-    )
+    ){
       elem.element.classList.remove("noactive");
+    }
     return elem;
   });
+  counter.textContent = count_copleted;
 }
 
 //change the style of the selected filter
@@ -264,6 +273,8 @@ function selectFilter(target) {
 
 //Sort Ascending
 function sortASC() {
+  asc.classList.add("selected");
+  desc.classList.remove("selected");
   array.sort(function (a, b) {
     let valueA = a.element.firstChild.nextElementSibling.value.toLowerCase();
     let valueB = b.element.firstChild.nextElementSibling.value.toLowerCase();
@@ -280,6 +291,8 @@ function sortASC() {
 
 //descending sort
 function sortDESC() {
+  desc.classList.add("selected");
+  asc.classList.remove("selected");
   array.sort(function (a, b) {
     let valueA = a.element.firstChild.nextElementSibling.value.toLowerCase();
     let valueB = b.element.firstChild.nextElementSibling.value.toLowerCase();
