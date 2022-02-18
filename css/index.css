@@ -15,7 +15,7 @@ h1 {
   position: relative;
 }
 
-.imputBlock {
+.inputBlock {
   margin-right: auto;
   margin-left: auto;
   width: 550px;
@@ -27,7 +27,7 @@ h1 {
   box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%), 0 25px 50px 0 rgb(0 0 0 / 10%);
 }
 
-.noactive {
+.noActive {
   display: none;
 }
 .input {
@@ -87,17 +87,17 @@ h1 {
 .destroy:after {
   content: "×";
 }
-.dispaly {
+.display {
   user-select: none;
   position: relative;
   width: 60px;
   height: 70px;
 }
-.dispaly:hover .destroy {
+.display:hover .destroy {
   display: block;
   position: absolute;
 }
-.dispalyEditing {
+.displayEditing {
   display: none;
 }
 
@@ -152,7 +152,7 @@ h1 {
 }
 
 /***************************************************************/
-/*Fotter */
+/*Footer */
 
 .footer {
   user-select: none;

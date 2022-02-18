@@ -5,7 +5,7 @@ export let viewInput = {
     input: document.querySelector("#input"),
     createInputBlock: function(value){
       let todoItem = document.createElement("div");
-      todoItem.setAttribute("class", "imputBlock");
+      todoItem.setAttribute("class", "inputBlock");
       todoItem.appendChild(this.createToggle());
       todoItem.appendChild(this.createTodoInput(value));
       todoItem.appendChild(this.createDestroyButton());
@@ -20,7 +20,7 @@ export let viewInput = {
     },
     createDestroyButton:function(){
       let display = document.createElement("div");
-      display.setAttribute("class", "dispaly");
+      display.setAttribute("class", "display");
       let destroy = document.createElement("button");
       destroy.setAttribute("class", "destroy");
       destroy.addEventListener("click", togglesDestroy);
@@ -44,7 +44,7 @@ function changeToDo(elem) {
     if (elem.target.readOnly) {
       elem.target.readOnly = false;
       elem.target.classList.toggle("editing");
-      elem.target.nextElementSibling.classList.toggle("dispalyEditing");
+      elem.target.nextElementSibling.classList.toggle("displayEditing");
     }
   }
   //event when focus was lost after changing ToDo
@@ -52,7 +52,7 @@ function changeToDo(elem) {
     if (!elem.target.readOnly) {
       elem.target.readOnly = true;
       elem.target.classList.toggle("editing");
-      elem.target.nextElementSibling.classList.toggle("dispalyEditing");
+      elem.target.nextElementSibling.classList.toggle("displayEditing");
     }
     if(!(elem.target.value.trim().length >= 3 &&
     elem.target.value.trim().length <= 200)){
@@ -196,6 +196,7 @@ function changeToDo(elem) {
     }
     checkFooter();
     checkFilter();
+    toggleAllCheck();
   }
   
   function checkFilter() {
@@ -208,8 +209,8 @@ function changeToDo(elem) {
   export function filterAll(event) {
     if (event) selectFilter(event.target);
     modelArray.getArray().forEach(elem=> {
-      if (elem.element.classList.contains("noactive")) {
-        elem.element.classList.remove("noactive"); 
+      if (elem.element.classList.contains("noActive")) {
+        elem.element.classList.remove("noActive"); 
       }
     });
     mainElements.counter.textContent = counter.getCount()+counter.getCountCompleted();
@@ -220,10 +221,10 @@ function changeToDo(elem) {
     if (event) selectFilter(event.target);
     modelArray.getArray().forEach(elem => {
       if (elem.element.firstChild.checked) {
-        elem.element.classList.add("noactive");
-      } else if (elem.element.classList.contains("noactive") 
+        elem.element.classList.add("noActive");
+      } else if (elem.element.classList.contains("noActive") 
       && !elem.element.firstChild.checked) {
-      elem.element.classList.remove("noactive");
+      elem.element.classList.remove("noActive");
     }
     });
     mainElements.counter.textContent = counter.getCount();
@@ -234,12 +235,12 @@ function changeToDo(elem) {
     if (event) selectFilter(event.target);
     modelArray.getArray().forEach(elem => {
       if (!elem.element.firstChild.checked)
-        elem.element.classList.add("noactive");
+        elem.element.classList.add("noActive");
       else if (
-        elem.element.classList.contains("noactive") &&
+        elem.element.classList.contains("noActive") &&
         elem.element.firstChild.checked
       ){
-        elem.element.classList.remove("noactive");
+        elem.element.classList.remove("noActive");
       }
       return elem;
     });
