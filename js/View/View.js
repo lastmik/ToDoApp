@@ -2,9 +2,11 @@ import { counter, modelArray, InputElement } from "../Models/Data.js";
 import { mainElements } from "../main.js";
 
 export let viewInput = {
+  // TODO: Check usage
   input: document.querySelector("#input"),
   createInputBlock: function (value) {
     let todoItem = document.createElement("div");
+    // TODO: Check classList instead
     todoItem.setAttribute("class", "inputBlock");
     todoItem.appendChild(this.createToggle());
     todoItem.appendChild(this.createTodoInput(value));
@@ -19,6 +21,9 @@ export let viewInput = {
     return label;
   },
   createDestroyButton: function () {
+    // TODO: Align to the exiting convention
+    // Take the business logic and element name itself
+    // Take the todoInput and label as example
     let display = document.createElement("div");
     display.setAttribute("class", "display");
     let destroy = document.createElement("button");
@@ -38,10 +43,12 @@ export let viewInput = {
   },
 };
 
+// TODO: Check and move close to the scope (private class method)
 //change ToDo
 function changeToDo(elem) {
   mainElements.value = elem.target.value;
   if (elem.target.readOnly) {
+    // TODO: Check and try to reuse this block and todoOnBlur functionality
     elem.target.readOnly = false;
     elem.target.classList.toggle("editing");
     elem.target.nextElementSibling.classList.toggle("displayEditing");
@@ -56,6 +63,7 @@ function todoOnBlur(elem) {
   }
   if (
     !(
+      // TODO: Move this validation check and reuse
       elem.target.value.trim().length >= 3 &&
       elem.target.value.trim().length <= 200
     )
@@ -96,6 +104,8 @@ function inputDone(elem) {
 export function toggleAll() {
   if (counter.getCountCompleted === 0) {
     modelArray.getArray().forEach((elem) => {
+      // TODO: Dont relate on the UI elements for state
+      // Better approach it is patch model, and then rerender the template
       toggleDone(elem.element.firstChild);
       inputDone(elem.element.firstChild.nextElementSibling);
       elem.element.firstChild.checked = true;
@@ -129,6 +139,7 @@ export function toggleAll() {
 }
 
 function toggleAllCheck() {
+  // TODO: Check toggle instead
   if (counter.getCount() === 0 && counter.getCountCompleted() > 0) {
     mainElements.toggleAllElement.classList.add("checked");
   } else {
@@ -137,6 +148,7 @@ function toggleAllCheck() {
 }
 
 function checkCompleted() {
+  // TODO: Check toggle instead
   if (counter.getCountCompleted() > 0)
     mainElements.clearCompletedElement.classList.remove("button_true");
   else mainElements.clearCompletedElement.classList.add("button_true");
@@ -162,6 +174,7 @@ export function clearCompleted() {
 function togglesDestroy(elem) {
   modelArray.getArray().forEach((toDo) => {
     if (toDo.element === elem.target.parentNode.parentNode) {
+      // TODO: Check if we need to store this flag instead of removing this record instead
       toDo.destroy = true;
     }
   });
@@ -192,6 +205,7 @@ export function addNewToDo(event) {
   ) {
     modelArray.setElement(new InputElement(input.value));
     mainElements.todoList.appendChild(
+      // Move into variables
       modelArray.getArray()[modelArray.getArray().length - 1].element
     );
     counter.increment();
@@ -209,6 +223,7 @@ function checkFilter() {
 }
 
 //Filter show all ToDo
+// TODO: Dont wire the state dependency within template 
 export function filterAll(event) {
   if (event) selectFilter(event.target);
   modelArray.getArray().forEach((elem) => {
@@ -266,6 +281,7 @@ function selectFilter(target) {
 }
 
 //Sort Ascending
+// TODO: Use lowerCamelCase
 export function sortASC() {
   mainElements.asc.classList.add("selected");
   mainElements.desc.classList.remove("selected");
@@ -277,6 +293,7 @@ export function sortASC() {
 
     return a.dateCreate - b.dateCreate;
   });
+  // TODO: Check, move and reuse this functionality
   mainElements.todoList.innerHTML = "";
   modelArray.getArray().forEach((elem) => {
     mainElements.todoList.appendChild(elem.element);
@@ -302,6 +319,7 @@ export function sortDESC() {
 }
 
 function checkFooter() {
+  // TODO: Remove all development only code
   console.log("check footer");
   if (counter.getCount() !== 0 || counter.getCountCompleted() !== 0)
     mainElements.filters.classList.add("visible");
