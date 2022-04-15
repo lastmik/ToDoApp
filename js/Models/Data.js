@@ -2,37 +2,38 @@ import { viewInput } from "../View/View.js";
 
 // TODO: Check if we can replace by POJO or use prototype instead
 // Lets refactor iife to more declarative way
-export let counter = new (function () {
-  let count = 0;
-  let countCompleted = 0;
-  this.increment = function () {
-    ++count;
-  };
-  this.decrement = function () {
-    --count;
-  };
-  this.incrementCompleted = function () {
-    ++countCompleted;
-  };
-  this.decrementCompleted = function () {
-    --countCompleted;
-  };
-  // TODO: Check getter instead
-  this.getCount = function () {
-    return count;
-  };
-  this.getCountCompleted = function () {
-    return countCompleted;
-  };
-  this.resetCount = function () {
-    return (count = 0);
-  };
-  this.resetCountCompleted = function () {
-    return (countCompleted = 0);
-  };
-})();
+export const counter = {
+  count: 0,
+  countCompleted: 0,
 
-export let modelArray = new (function () {
+  increment() {
+    ++this.count;
+  },
+  decrement() {
+    --this.count;
+  },
+  incrementCompleted() {
+    ++this.countCompleted;
+  },
+  decrementCompleted() {
+    --this.countCompleted;
+  },
+  // TODO: Check getter instead
+  get getCount() {
+    return this.count;
+  },
+  get getCountCompleted() {
+    return this.countCompleted;
+  },
+  resetCount() {
+    return (this.count = 0);
+  },
+  resetCountCompleted() {
+    return (this.countCompleted = 0);
+  },
+};
+
+export const modelArray = new (function () {
   let array = [];
   this.getArray = function () {
     return array;
@@ -50,7 +51,7 @@ export class InputElement {
   dateCreate;
   destroy = false;
   constructor(value) {
-    // TODO: Check if we really need keep reference to certain element, instead of only value 
+    // TODO: Check if we really need keep reference to certain element, instead of only value
     this.element = viewInput.createInputBlock(value);
     this.dateCreate = Date.now();
   }
