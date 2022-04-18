@@ -1,11 +1,23 @@
 import { counter, modelArray, InputElement } from "../Models/Data.js";
-import { mainElements } from "../main.js";
 
-export let viewInput = {
+export const mainElements = {
+  input: document.querySelector("#input"),
+  todoList: document.querySelector("#todo_list"),
+  clearElement: document.querySelector("#clear"),
+  toggleAll: document.querySelector("#toggle_all"),
+  footer: document.querySelector(".footer"),
+  asc: document.querySelector("#asc"),
+  desc: document.querySelector("#desc"),
+  counter: document.querySelector("#count"),
+  value: "",
+  filter: "All",
+};
+export const viewInput = {
+  // TODO: Check usage
   input: document.querySelector("#input"),
   createInputBlock: function (value) {
     let todoItem = document.createElement("div");
-    todoItem.setAttribute("class", "inputBlock");
+    todoItem.classList.add("class", "inputBlock");
     todoItem.appendChild(this.createToggle());
     todoItem.appendChild(this.createTodoInput(value));
     todoItem.appendChild(this.createDestroyButton());
@@ -23,7 +35,7 @@ export let viewInput = {
     display.setAttribute("class", "display");
     let destroy = document.createElement("button");
     destroy.setAttribute("class", "destroy");
-    destroy.addEventListener("click", togglesDestroy);
+    destroy.addEventListener("click", destroyToDo);
     display.appendChild(destroy);
     return display;
   },
@@ -31,49 +43,40 @@ export let viewInput = {
     let todoInput = document.createElement("input");
     todoInput.setAttribute("class", "todo");
     todoInput.setAttribute("value", value);
-    todoInput.addEventListener("dblclick", changeToDo);
-    todoInput.addEventListener("blur", todoOnBlur);
+    todoInput.addEventListener("dblclick", function (elem) {
+      mainElements.value = elem.target.value;
+      changeToDoHandler(elem);
+    });
+    todoInput.addEventListener("blur", function (elem) {
+      let value = elem.target.value.trim().length;
+      changeToDoHandler(elem);
+      if (!(value >= 3 && value <= 200)) {
+        elem.target.value = mainElements.value;
+      } else {
+        elem.target.value = elem.target.value.trim();
+      }
+    });
     todoInput.readOnly = true;
     return todoInput;
   },
 };
 
-//change ToDo
-function changeToDo(elem) {
-  mainElements.value = elem.target.value;
-  if (elem.target.readOnly) {
-    elem.target.readOnly = false;
-    elem.target.classList.toggle("editing");
-    elem.target.nextElementSibling.classList.toggle("displayEditing");
-  }
-}
-//event when focus was lost after changing ToDo
-function todoOnBlur(elem) {
-  if (!elem.target.readOnly) {
-    elem.target.readOnly = true;
-    elem.target.classList.toggle("editing");
-    elem.target.nextElementSibling.classList.toggle("displayEditing");
-  }
-  if (
-    !(
-      elem.target.value.trim().length >= 3 &&
-      elem.target.value.trim().length <= 200
-    )
-  ) {
-    elem.target.value = mainElements.value;
-  }
+function changeToDoHandler(elem) {
+  elem.target.readOnly = !elem.target.readOnly;
+  elem.target.classList.toggle("editing");
+  elem.target.nextElementSibling.classList.toggle("displayEditing");
 }
 
 //click event on completion ToDo
 function togglesComplete(elem) {
   if (elem.target.checked) {
     counter.increment();
-    mainElements.counter.textContent = counter.getCount();
+    mainElements.counter.textContent = counter.getCount;
     counter.decrementCompleted();
     elem.target.checked = false;
   } else {
     counter.decrement();
-    mainElements.counter.textContent = counter.getCount();
+    mainElements.counter.textContent = counter.getCount;
     counter.incrementCompleted();
     elem.target.checked = true;
   }
@@ -91,37 +94,45 @@ function toggleDone(elem) {
 function inputDone(elem) {
   elem.classList.toggle("done");
 }
+function todoCheckedHandler(elem) {
+  toggleDone(elem.element.firstChild);
+  inputDone(elem.element.firstChild.nextElementSibling);
+}
 
 //click event on completion of all ToDo
 export function toggleAll() {
   if (counter.getCountCompleted === 0) {
     modelArray.getArray().forEach((elem) => {
-      toggleDone(elem.element.firstChild);
-      inputDone(elem.element.firstChild.nextElementSibling);
+      // TODO: Dont relate on the UI elements for state
+      // Better approach it is patch model, and then rerender the template
       elem.element.firstChild.checked = true;
       counter.incrementCompleted();
     });
-    mainElements.counter.textContent = counter.resetCount();
-  } else if (counter.getCount() === 0) {
     modelArray.getArray().forEach((elem) => {
-      toggleDone(elem.element.firstChild);
-      inputDone(elem.element.firstChild.nextElementSibling);
+      todoCheckedHandler(elem);
+    });
+    mainElements.counter.textContent = counter.resetCount();
+  } else if (counter.getCount === 0) {
+    modelArray.getArray().forEach((elem) => {
       elem.element.firstChild.checked = false;
       counter.increment();
+    });
+    modelArray.getArray().forEach((elem) => {
+      todoCheckedHandler(elem);
     });
     mainElements.counter.textContent = counter.getCount;
     counter.resetCountCompleted();
   } else {
     modelArray.getArray().forEach((elem) => {
       if (!elem.element.firstChild.checked) {
-        toggleDone(elem.element.firstChild);
-        inputDone(elem.element.firstChild.nextElementSibling);
+        todoCheckedHandler(elem);
         elem.element.firstChild.checked = true;
         counter.incrementCompleted();
         counter.decrement();
       }
     });
-    mainElements.counter.textContent = counter.getCount();
+
+    mainElements.counter.textContent = counter.getCount;
   }
   checkFilter();
   checkCompleted();
@@ -129,17 +140,19 @@ export function toggleAll() {
 }
 
 function toggleAllCheck() {
-  if (counter.getCount() === 0 && counter.getCountCompleted() > 0) {
-    mainElements.toggleAllElement.classList.add("checked");
+  // TODO: Check toggle instead
+  if (counter.getCount === 0 && counter.getCountCompleted > 0) {
+    mainElements.toggleAll.classList.add("checked");
   } else {
-    mainElements.toggleAllElement.classList.remove("checked");
+    mainElements.toggleAll.classList.remove("checked");
   }
 }
 
 function checkCompleted() {
-  if (counter.getCountCompleted() > 0)
-    mainElements.clearCompletedElement.classList.remove("button_true");
-  else mainElements.clearCompletedElement.classList.add("button_true");
+  // TODO: Check toggle instead
+  if (counter.getCountCompleted > 0)
+    mainElements.clearElement.classList.remove("button_true");
+  else mainElements.clearElement.classList.add("button_true");
 }
 
 //Delete all completed ToDo event
@@ -159,9 +172,10 @@ export function clearCompleted() {
 }
 
 //ToDo delete event
-function togglesDestroy(elem) {
+function destroyToDo(elem) {
   modelArray.getArray().forEach((toDo) => {
     if (toDo.element === elem.target.parentNode.parentNode) {
+      // TODO: Check if we need to store this flag instead of removing this record instead
       toDo.destroy = true;
     }
   });
@@ -169,7 +183,7 @@ function togglesDestroy(elem) {
   elem.target.parentElement.parentElement.remove();
   if (!elem.target.parentElement.parentElement.firstChild.checked) {
     counter.decrement();
-    mainElements.counter.textContent = counter.getCount();
+    mainElements.counter.textContent = counter.getCount;
   } else counter.decrementCompleted();
 
   checkFooter();
@@ -190,12 +204,11 @@ export function addNewToDo(event) {
     event.target.value.trim().length >= 3 &&
     event.target.value.trim().length <= 200
   ) {
-    modelArray.setElement(new InputElement(input.value));
-    mainElements.todoList.appendChild(
-      modelArray.getArray()[modelArray.getArray().length - 1].element
-    );
+    modelArray.setElement(new InputElement(input.value.trim()));
+    let array = modelArray.getArray();
+    mainElements.todoList.appendChild(array[array.length - 1].element);
     counter.increment();
-    mainElements.counter.textContent = counter.getCount();
+    mainElements.counter.textContent = counter.getCount;
   }
   checkFooter();
   checkFilter();
@@ -203,26 +216,29 @@ export function addNewToDo(event) {
 }
 
 function checkFilter() {
-  if (location.hash === "#/active") filterActive();
-  else if (location.hash === "#/completed") filterCompleted();
+  if (mainElements.filter === "Active") filterActive();
+  else if (mainElements.filter === "Completed") filterCompleted();
   else filterAll();
 }
 
 //Filter show all ToDo
+// TODO: Dont wire the state dependency within template
 export function filterAll(event) {
   if (event) selectFilter(event.target);
+  mainElements.filter = "All";
   modelArray.getArray().forEach((elem) => {
     if (elem.element.classList.contains("noActive")) {
       elem.element.classList.remove("noActive");
     }
   });
   mainElements.counter.textContent =
-    counter.getCount() + counter.getCountCompleted();
+    counter.getCount + counter.getCountCompleted;
 }
 
 //Filter show all active ToDo
 export function filterActive(event) {
   if (event) selectFilter(event.target);
+  mainElements.filter = "Active";
   modelArray.getArray().forEach((elem) => {
     if (elem.element.firstChild.checked) {
       elem.element.classList.add("noActive");
@@ -233,12 +249,13 @@ export function filterActive(event) {
       elem.element.classList.remove("noActive");
     }
   });
-  mainElements.counter.textContent = counter.getCount();
+  mainElements.counter.textContent = counter.getCount;
 }
 
 //Filter show all completed ToDo
 export function filterCompleted(event) {
   if (event) selectFilter(event.target);
+  mainElements.filter = "Completed";
   modelArray.getArray().forEach((elem) => {
     if (!elem.element.firstChild.checked)
       elem.element.classList.add("noActive");
@@ -250,7 +267,7 @@ export function filterCompleted(event) {
     }
     return elem;
   });
-  mainElements.counter.textContent = counter.getCountCompleted();
+  mainElements.counter.textContent = counter.getCountCompleted;
 }
 
 //change the style of the selected filter
@@ -266,7 +283,7 @@ function selectFilter(target) {
 }
 
 //Sort Ascending
-export function sortASC() {
+export function sortAsc() {
   mainElements.asc.classList.add("selected");
   mainElements.desc.classList.remove("selected");
   modelArray.getArray().sort(function (a, b) {
@@ -277,14 +294,11 @@ export function sortASC() {
 
     return a.dateCreate - b.dateCreate;
   });
-  mainElements.todoList.innerHTML = "";
-  modelArray.getArray().forEach((elem) => {
-    mainElements.todoList.appendChild(elem.element);
-  });
+  sortHTMLHundler();
 }
 
 //descending sort
-export function sortDESC() {
+export function sortDesc() {
   mainElements.desc.classList.add("selected");
   mainElements.asc.classList.remove("selected");
   modelArray.getArray().sort(function (a, b) {
@@ -295,15 +309,17 @@ export function sortDESC() {
 
     return b.dateCreate - a.dateCreate;
   });
+  sortHTMLHundler();
+}
+
+function sortHTMLHundler() {
   mainElements.todoList.innerHTML = "";
   modelArray.getArray().forEach((elem) => {
     mainElements.todoList.appendChild(elem.element);
   });
 }
-
 function checkFooter() {
-  console.log("check footer");
-  if (counter.getCount() !== 0 || counter.getCountCompleted() !== 0)
-    mainElements.filters.classList.add("visible");
-  else mainElements.filters.classList.remove("visible");
+  if (counter.getCount !== 0 || counter.getCountCompleted !== 0)
+    mainElements.footer.classList.add("visible");
+  else mainElements.footer.classList.remove("visible");
 }
